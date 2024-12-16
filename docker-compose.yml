@@ -1,0 +1,38 @@
+---
+services:
+  app:
+    image: dockerregistry:5000/ocr-image-app:latest
+    environment:
+      SOURCE_DIR: ${SOURCE_DIR}
+      TARGET_DIR: ${TARGET_DIR}
+      FILE_SOURCE_EXTENSIONS: ${FILE_SOURCE_EXTENSIONS}
+      SCHEDULE_MINUTES: ${SCHEDULE_MINUTES}
+      TIMEOUT_CAMERA_ONLINE: ${TIMEOUT_CAMERA_ONLINE}
+      MQTT_HOST: ${MQTT_HOST}
+      MQTT_PORT: ${MQTT_PORT}
+      MQTT_USER: ${MQTT_USER}
+      MQTT_PASSWORD: ${MQTT_PASSWORD}
+      MQTT_TOPIC_COMMAND: ${MQTT_TOPIC_COMMAND}
+      MQTT_TOPIC_WATER: ${MQTT_TOPIC_WATER}
+      RTSP_PATH: ${RTSP_PATH}
+      AI_MODEL: ${AI_MODEL}
+      AI_PROMPT: ${AI_PROMPT}
+      AI_HOST: ${AI_HOST}
+      AI_GEMINI_API_KEY: ${AI_GEMINI_API_KEY}
+      AI_OPENAI_API_KEY: ${AI_OPENAI_API_KEY}
+    networks:
+      - ocr-image-network
+    deploy:
+      placement:
+        constraints:
+          - "node.role == worker"
+      resources:
+        limits:
+          memory: 2gb
+          cpus: '0.75'
+      restart_policy:
+        condition: any
+      replicas: 1
+networks:
+  ocr-image-network:
+    driver: overlay

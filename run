@@ -1,0 +1,7 @@
+#!/bin/bash
+
+docker compose down > /dev/null
+docker stack rm ocr-image_stack > /dev/null
+
+docker stack deploy --compose-file docker-compose.yml ocr-image_stack
+

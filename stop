@@ -1,0 +1,5 @@
+#!/bin/bash
+
+docker compose down > /dev/null
+docker stack rm ocr-image_stack > /dev/null
+
