@@ -35,4 +35,4 @@ services:
       replicas: 1
 networks:
   ocr-image-network:
-    driver: overlay
+    driver: bridge

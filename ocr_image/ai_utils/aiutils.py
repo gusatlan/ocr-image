@@ -9,7 +9,7 @@ AI_MODEL_ENV='ai_model'
 AI_PROMPT_ENV='ai_prompt'
 AI_HOST_ENV='ai_host'
 AI_OPENAI_API_KEY_ENV='ai_openapi_api_key'
-AI_GEMINI_API_KEY_ENV='gemini_api_key'
+AI_GEMINI_API_KEY_ENV='ai_gemini_api_key'
 
 
 def get_ai_model() -> str:
