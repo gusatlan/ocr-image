@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11-slim-buster
 
 ENV POETRY_VERSION=1.7.0 \
     POETRY_HOME="/opt/poetry" \
@@ -17,6 +17,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN mkdir -p /app/ocr_image
 RUN mkdir -p /ram/images
+RUN mkdir -p /ram/data
+RUN mkdir -p /ram/backup
+
+VOLUME /ram/backup
 
 WORKDIR /app
 

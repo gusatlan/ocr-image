@@ -6,6 +6,8 @@ services:
       SOURCE_DIR: ${SOURCE_DIR}
       TARGET_DIR: ${TARGET_DIR}
       FILE_SOURCE_EXTENSIONS: ${FILE_SOURCE_EXTENSIONS}
+      BACKUP_IMAGE: ${BACKUP_IMAGE}
+      BACKUP_DIR: ${BACKUP_DIR}
       SCHEDULE_MINUTES: ${SCHEDULE_MINUTES}
       TIMEOUT_CAMERA_ONLINE: ${TIMEOUT_CAMERA_ONLINE}
       MQTT_HOST: ${MQTT_HOST}
@@ -20,6 +22,8 @@ services:
       AI_HOST: ${AI_HOST}
       AI_GEMINI_API_KEY: ${AI_GEMINI_API_KEY}
       AI_OPENAI_API_KEY: ${AI_OPENAI_API_KEY}
+    volumes:
+      - "ocr-image-data:/ram/backup"
     networks:
       - ocr-image-network
     deploy:
@@ -33,6 +37,13 @@ services:
       restart_policy:
         condition: any
       replicas: 1
+volumes:
+  ocr-image-data:
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.0.40,nolock,soft,rw,rsize=8192,wsize=8192"
+      device: ":/media/data/ocrimage/data"
+
 networks:
   ocr-image-network:
     driver: overlay

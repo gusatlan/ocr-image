@@ -1,4 +1,4 @@
-from os_utils.osutils import get_source_dir, get_source_file_extensions, read_source, read_file_base64, remove_file, get_schedule_minutes, get_timeout_camera_online
+from os_utils.osutils import get_source_dir, get_source_file_extensions, read_source, read_file_base64, remove_file, get_schedule_minutes, get_timeout_camera_online, is_backup, get_backup_dir, backup_file
 from image_utils.imageutils import read_image, extract_text, convert_image_base64_dict, save_image, get_rtsp_path, crop_image
 from ai_utils.aiutils import chat_with_gemini, extract_value, get_ai_prompt
 from mqtt_utils.mqttutils import create_client, start, disconnect, send_message, get_mqtt_topic_command, get_mqtt_topic_consumption
@@ -47,20 +47,28 @@ def read_job():
     images = [read_file_base64(file) for file in files]
     images_base64 = [convert_image_base64_dict(image_base64=image) for image in images]
 
-    response = extract_value(text=chat_with_gemini(
-        prompt=get_ai_prompt(),
-        image=images_base64[0]
-    ))
+    try:
+        response = extract_value(text=chat_with_gemini(
+            prompt=get_ai_prompt(),
+            image=images_base64[0]
+        ))
 
-    response_json = json.dumps({'date': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'consumption': float(response), 'entity': 'house3_water'})
+        response_json = json.dumps({'date': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'consumption': float(response), 'entity': 'house3_water'})
 
-    get_logger().info(f'Result to send:{response_json}')
-    send_message(client=client_mqtt, topic=get_mqtt_topic_command(), message='OFF')
-    send_message(client=client_mqtt, topic=get_mqtt_topic_consumption(), message=response_json)
+        get_logger().info(f'Result to send:{response_json}')
+        send_message(client=client_mqtt, topic=get_mqtt_topic_consumption(), message=response_json)
+        get_logger().info(f'Water consumption {response_json}')
+    except Exception as err:
+        get_logger().error('Error on extract value', err)
+    finally:
+        send_message(client=client_mqtt, topic=get_mqtt_topic_command(), message='OFF')
+        disconnect(client=client_mqtt)
 
-    disconnect(client=client_mqtt)
+    if is_backup():
+        [backup_file(src_dir=get_source_dir(), src_file=file, target_dir=get_backup_dir()) for file in files]
+    
     [remove_file(dir=get_source_dir(), file=file) for file in files]
-    get_logger().info(f'Water consumption {response_json}')
+    
 
 
 if __name__ == '__main__':
