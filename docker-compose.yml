@@ -29,7 +29,7 @@ services:
     deploy:
       placement:
         constraints:
-          - "node.role == worker"
+          - "node.labels.waterconsumption == true"
       resources:
         limits:
           memory: 2gb
