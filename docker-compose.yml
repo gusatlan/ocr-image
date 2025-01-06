@@ -30,6 +30,7 @@ services:
       placement:
         constraints:
           - "node.labels.waterconsumption == true"
+          - "node.role == worker"
       resources:
         limits:
           memory: 2gb

@@ -1,8 +1,7 @@
 from os_utils.osutils import get_source_dir, get_source_file_extensions, read_source, read_file_base64, remove_file, get_schedule_minutes, get_timeout_camera_online, is_backup, get_backup_dir, backup_file
-from image_utils.imageutils import read_image, extract_text, convert_image_base64_dict, save_image, get_rtsp_path, crop_image
+from image_utils.imageutils import read_image, extract_text, convert_image_base64_dict, save_image, get_rtsp_path, crop_image, now
 from ai_utils.aiutils import chat_with_gemini, extract_value, get_ai_prompt
 from mqtt_utils.mqttutils import create_client, start, disconnect, send_message, get_mqtt_topic_command, get_mqtt_topic_consumption
-from datetime import datetime
 from utils.utils import get_logger
 import json
 from dotenv import load_dotenv
@@ -53,7 +52,7 @@ def read_job():
             image=images_base64[0]
         ))
 
-        response_json = json.dumps({'date': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'consumption': float(response), 'entity': 'house3_water'})
+        response_json = json.dumps({'date': now().strftime("%Y-%m-%d %H:%M:%S"), 'consumption': float(response), 'entity': 'house3_water'})
 
         get_logger().info(f'Result to send:{response_json}')
         send_message(client=client_mqtt, topic=get_mqtt_topic_consumption(), message=response_json)

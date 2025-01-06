@@ -5,6 +5,7 @@ import base64
 import os
 import subprocess
 from datetime import datetime
+import pytz
 from os_utils.osutils import get_parameter
 import cv2
 
@@ -41,8 +42,14 @@ def convert_image_base64_dict(image_base64, mime_type:str='image/jpeg'):
     return content
 
 
+def now():
+    timezone = pytz.timezone('America/Sao_Paulo')
+    current_time = datetime.now(timezone)
+    return current_time
+    
+
 def save_image(url:str, target_dir:str):
-    target = os.path.join(target_dir, f'{datetime.now()}.jpeg')
+    target = os.path.join(target_dir, f'{now()}.jpeg')
     command = ['ffmpeg', '-i', url, '-vframes', '1', '-q:v', '2', target]
 
     if not os.path.exists(target_dir):
