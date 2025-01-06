@@ -46,10 +46,14 @@ def now():
     timezone = pytz.timezone('America/Sao_Paulo')
     current_time = datetime.now(timezone)
     return current_time
+
+
+def now_str():
+    return now().strftime("%Y-%m-%d_%H_%M_%S")
     
 
 def save_image(url:str, target_dir:str):
-    target = os.path.join(target_dir, f'{now()}.jpeg')
+    target = os.path.join(target_dir, f'{now_str()}.jpeg')
     command = ['ffmpeg', '-i', url, '-vframes', '1', '-q:v', '2', target]
 
     if not os.path.exists(target_dir):
